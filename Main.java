@@ -1,6 +1,5 @@
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -10,7 +9,7 @@ public class Main {
 
         // 1. 管理者と利用者の登録
         System.out.println("\n--- 1. 管理者と利用者の登録 ---");
-        Admin admin1 = new Admin("大津昂光海", "otsutakao", "adminpass");
+        Admin admin1 = new Admin("乙津昂光海", "otsuakiomi", "adminpass");
         User user1 = new User("岩井優弥", "iwaiyuya", "userpass1");
         User user2 = new User("松村拓", "matsumuratakumi", "userpass2");
 
@@ -25,12 +24,12 @@ public class Main {
             System.err.println("利用者登録エラー: " + e.getMessage());
         }
 
-        // 2. 蔵書の登録 (持ち出し可能/持ち出し禁止の本を含む)
+        // 2. 蔵書の登録
         System.out.println("\n--- 2. 蔵書の登録 ---");
-        Book book1 = new Book("Effective Java", "Joshua Bloch", 3, true); // 持ち出し可能
-        Book book2 = new Book("Clean Code", "Robert C. Martin", 2, true); // 持ち出し可能
-        Book book3 = new Book("Design Patterns", "Erich Gamma", 1, true); // 持ち出し可能
-        Book book4 = new Book("Refactoring", "Martin Fowler", 1, false); // 持ち出し禁止の本
+        Book book1 = new Book("空想科学読本", "柳田理科雄", 3, true);
+        Book book2 = new Book("国宝", "吉田修一", 2, true);
+        Book book3 = new Book("君の膵臓をたべたい", "住野よる", 1, true);
+        Book book4 = new Book("広辞苑", "岩波新書", 1, false);
 
         try {
             library.createBook(book1);
@@ -45,19 +44,19 @@ public class Main {
             System.err.println("蔵書登録エラー: " + e.getMessage());
         }
 
-        // 全蔵書を表示 (持ち出し可能な本のみ表示されることを確認)
+        // 全蔵書を表示
         System.out.println("\n--- 現在の蔵書一覧 (持ち出し可能な本のみ) ---");
         library.findBooks("").forEach(book ->
                 System.out.println("  - " + book.getTitle() + " by " + book.getAuthor() + " (利用可能: " + book.getAvailableCopies() + "/" + book.getTotalCopies() + ", 持ち出し可: " + book.isBorrowable() + ")")
         );
 
-        // 3. 蔵書の検索 (持ち出し禁止の本が含まれないことを確認)
+        // 3. 蔵書の検索
         System.out.println("\n--- 3. 蔵書の検索 (タイトル: Refactoring - 持ち出し禁止) ---");
         List<Book> foundBooksRefactoring = library.findBooks("Refactoring");
         if (!foundBooksRefactoring.isEmpty()) {
             foundBooksRefactoring.forEach(book -> System.out.println("  - 見つかった本: " + book.getTitle() + " (" + book.getAuthor() + ")"));
         } else {
-            System.out.println("指定されたタイトルを含む持ち出し可能な本は見つかりませんでした。"); // 持ち出し禁止なので見つからないはず
+            System.out.println("指定されたタイトルを含む持ち出し可能な本は見つかりませんでした。");
         }
 
 
@@ -66,7 +65,7 @@ public class Main {
         LoanRecord loan1 = null;
         LoanRecord loan2 = null;
         LoanRecord loan3 = null;
-        LoanRecord loan4 = null; // 持ち出し禁止の本を借りる試行用
+        LoanRecord loan4 = null;
 
         try {
             System.out.println(user1.getName() + "が " + book1.getTitle() + " を借りようとしています。");
@@ -89,8 +88,8 @@ public class Main {
 
             // 持ち出し禁止の本を借りる試行
             System.out.println(user1.getName() + "が持ち出し禁止の " + book4.getTitle() + " を借りようとしています。");
-            loan4 = library.loanBook(user1.getId(), book4.getId()); // エラーになるはず
-            System.out.println("貸出成功: " + loan4); // ここには到達しない
+            loan4 = library.loanBook(user1.getId(), book4.getId());
+            System.out.println("貸出成功: " + loan4);
         } catch (IllegalStateException | IllegalArgumentException e) {
             System.err.println("貸出エラー: " + e.getMessage());
         }
